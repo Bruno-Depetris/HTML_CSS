@@ -6,7 +6,7 @@
     <title>Dashboard SPA</title>
     <link rel="stylesheet" href="style.css" />
   </head>
-  <body onload="loadView('dashboardView')">
+  <body onload="loadView('inquilinoView')">
     <!--Resulta que se carga mejor desde el dom hijo de puta -->
 
     <nav class="top-bar">
@@ -28,22 +28,22 @@
     <div class="container">
       <div class="content-lateral-bar">
         <div class="content-buttons">
-          <button class="lateral-buttons" onclick="loadView('dashboardView')">
+          <button class="lateral-buttons" id="btn-dashboard">
             ⚡ Dashboard
           </button>
-          <button class="lateral-buttons" onclick="showClientes()">
-            👩‍💻 Clientes
+          <button class="lateral-buttons" id="btn-clientes">
+            👩‍💻 Inquilinos
           </button>
-          <button class="lateral-buttons" onclick="showClientes()">
+          <button class="lateral-buttons" id="btn-propietarios">
             🏡 Propietarios
           </button>
-          <button class="lateral-buttons" onclick="showClientes()">
+          <button class="lateral-buttons" id="btn-facturas">
             💬 Facturas
           </button>
-          <button class="lateral-buttons" onclick="showClientes()">
+          <button class="lateral-buttons" id="btn-notificaciones">
             📣 Notificaciones
           </button>
-          <button class="lateral-buttons" onclick="showClientes()">
+          <button class="lateral-buttons" id="btn-ayuda">
             🏳 Ayuda
           </button>
 

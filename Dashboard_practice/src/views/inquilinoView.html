@@ -1,0 +1,63 @@
+<div class="container-clientes">
+  <h1>Inquilinos</h1>
+  <p>Aqui podras ver todos los inquilinos vigentes</p>
+
+  <div class="container-search">
+    <input type="text" placeholder="Ingrese un nombre" style="width: 30%" />
+    <input type="button" value="Buscar" />
+  </div>
+
+  <!-- TABLA -->
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Gmail</th>
+        <th>Teléfono</th>
+        <th>Cód. Propiedad</th>
+        <th>Dirección</th>
+        <th>Vencimiento</th>
+        <th>Editar</th>
+        <th>Eliminar</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Bruno Depetris</td>
+        <td>depetrisbruno@gmail.com</td>
+        <td>+54 341 555 1234</td>
+        <td>PR-001</td>
+        <td>Av. Pellegrini 123</td>
+        <td>20/10/2025</td>
+        <td>
+          <button class="btn edit" onclick="abrirModal('Bruno Depetris')">
+            ✏️
+          </button>
+        </td>
+        <td><button class="btn delete" onclick="eliminiar()">🗑️</button></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- MODAL -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span class="cerrar" onclick="cerrarModal()">&times;</span>
+      <h2>Editar Cliente</h2>
+      <form>
+        <label>Nombre:</label>
+        <input type="text" id="nombre" /><br /><br />
+
+        <label>Gmail:</label>
+        <input type="email" id="gmail" /><br /><br />
+
+        <label>Teléfono:</label>
+        <input type="text" id="telefono" /><br /><br />
+
+        <button type="submit" class="btn edit">Guardar</button>
+      </form>
+    </div>
+  </div>
+
+
+</div>

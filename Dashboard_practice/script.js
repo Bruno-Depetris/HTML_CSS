@@ -2,6 +2,36 @@ let currentCSS = null;
 let currentScript = null;
 loadView('dashboardView');
 
+let ultimoBotonClickeado = null;
+let boton = null;
+
+document.getElementById("btn-dashboard").addEventListener("click", () => {
+  botonClickeado("btn-dashboard");
+  loadView('dashboardView')
+});
+
+
+document.getElementById("btn-clientes").addEventListener("click", () => {
+  botonClickeado("btn-clientes");
+  loadView('inquilinoView')
+});
+
+document.getElementById("btn-propietarios").addEventListener("click", () => {
+  botonClickeado("btn-propietarios");
+});
+
+document.getElementById("btn-facturas").addEventListener("click", () => {
+  botonClickeado("btn-facturas");
+});
+
+document.getElementById("btn-notificaciones").addEventListener("click", () => {
+  botonClickeado("btn-notificaciones");
+});
+
+document.getElementById("btn-ayuda").addEventListener("click", () => {
+  botonClickeado("btn-ayuda");
+});
+
 function loadView(viewName) {
   const main = document.getElementById('main-content');
 
@@ -10,17 +40,17 @@ function loadView(viewName) {
     .then(html => {
       main.innerHTML = html;
 
-      // Limpiar CSS anterior
+      //limpiar CSS anterior (pq sino se rompe el muy mogolico)
       if (currentCSS) currentCSS.remove();
       currentCSS = document.createElement('link');
       currentCSS.rel = 'stylesheet';
-      currentCSS.href = `src/views/${viewName}.css`;
+      currentCSS.href = `src/css/${viewName}.css`;
       document.head.appendChild(currentCSS);
 
       // Limpiar JS anterior
       if (currentScript) currentScript.remove();
       currentScript = document.createElement('script');
-      currentScript.src = `src/views/${viewName}.js`;
+      currentScript.src = `src/js/${viewName}.js`;
       document.body.appendChild(currentScript);
 
       // Espera que el script cargue
@@ -31,4 +61,15 @@ function loadView(viewName) {
     .catch(err => console.error(err));
 }
 
+function botonClickeado(botonId) {
+  
+  const botones = document.querySelectorAll(".lateral-buttons");
+  botones.forEach(boton => boton.classList.remove("activo"));
 
+  const botonActual = document.getElementById(botonId);
+  if (botonActual) {
+    botonActual.classList.add("activo");
+
+    ultimoBotonClickeado = botonId;
+  }
+}
