@@ -1,6 +1,10 @@
+// import { mostrarNotificacion } from "./src/notification/notif.js";
+
+
 let currentCSS = null;
 let currentScript = null;
 loadView('dashboardView');
+
 
 let ultimoBotonClickeado = null;
 let boton = null;
@@ -8,6 +12,7 @@ let boton = null;
 document.getElementById("btn-dashboard").addEventListener("click", () => {
   botonClickeado("btn-dashboard");
   loadView('dashboardView')
+  // mostrarNotificacion("Contrato vencido en 3 días", "warning");
 });
 
 
@@ -18,6 +23,7 @@ document.getElementById("btn-clientes").addEventListener("click", () => {
 
 document.getElementById("btn-propiedades").addEventListener("click", () => {
   botonClickeado("btn-propiedades");
+  loadView('propiedadesView')
 });
 
 document.getElementById("btn-contratos").addEventListener("click", () => {

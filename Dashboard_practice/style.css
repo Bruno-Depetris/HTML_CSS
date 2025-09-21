@@ -110,7 +110,25 @@ body {
   overflow-y: auto;
 }
 
+.user-data {
 
+}
+.user-label {
+}
+.user-email {
+}
+
+.top-right button{
+  border: none;
+  background: none;
+  color: rgba(0, 38, 255, 0.473);
+  cursor: pointer;
+  transition: 0.2s all;
+}
+
+.top-right button:hover{
+   color: rgba(255, 0, 0, 0.473);
+}
 .material-icons {
   font-family: 'Material Icons';
   font-weight: normal;
