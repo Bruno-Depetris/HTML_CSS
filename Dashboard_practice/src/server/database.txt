@@ -1,0 +1,370 @@
+-- ==============================
+-- TABLAS PRINCIPALES
+-- ==============================
+
+-- Usuarios
+CREATE TABLE Usuarios (
+    UsuarioID INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(100) NOT NULL,
+    Email VARCHAR(100) UNIQUE NOT NULL,
+    Telefono VARCHAR(50),
+    Rol ENUM('admin','vendedor','contadora') NOT NULL
+);
+
+-- Paises
+CREATE TABLE Paises (
+    PaisID INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(100) NOT NULL
+);
+
+-- Provincias
+CREATE TABLE Provincias (
+    ProvinciaID INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(100) NOT NULL,
+    PaisID INT,
+    FOREIGN KEY (PaisID) REFERENCES Paises(PaisID)
+);
+
+
+-- Ciudades
+CREATE TABLE Ciudades (
+    CiudadID INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(100) NOT NULL,
+    ProvinciaID INT,
+    FOREIGN KEY (ProvinciaID) REFERENCES Provincias(ProvinciaID)
+);
+
+-- Propietarios
+CREATE TABLE Propietarios (
+    PropietarioID INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(100) NOT NULL,
+    Email VARCHAR(100) UNIQUE,
+    Telefono VARCHAR(50),
+    Calle VARCHAR(100),
+    Numero VARCHAR(10),
+    Piso VARCHAR(10),
+    Depto VARCHAR(10),
+    Barrio VARCHAR(50),
+    CiudadID INT,
+    FOREIGN KEY (CiudadID) REFERENCES Ciudades(CiudadID)
+);
+
+-- Inquilinos
+CREATE TABLE Inquilinos (
+    InquilinoID INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(100) NOT NULL,
+    Email VARCHAR(100) UNIQUE,
+    Telefono VARCHAR(50),
+    Documento VARCHAR(50)
+);
+
+-- Garantes
+CREATE TABLE Garantes (
+    GaranteID INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(100) NOT NULL,
+    Telefono VARCHAR(50),
+    Email VARCHAR(100)
+);
+
+
+
+-- Propiedades
+CREATE TABLE Propiedades (
+    PropiedadID INT AUTO_INCREMENT PRIMARY KEY,
+    Calle VARCHAR(100),
+    Numero VARCHAR(10),
+    Piso VARCHAR(10),
+    Depto VARCHAR(10),
+    Barrio VARCHAR(50),
+    CiudadID INT,
+    Estado ENUM('disponible','alquilada','mantenimiento') DEFAULT 'disponible',
+    FOREIGN KEY (CiudadID) REFERENCES Ciudades(CiudadID)
+);
+
+-- Relación N:N Propietarios - Propiedades
+CREATE TABLE Propietarios_Propiedades (
+    Propietario_PropiedadID INT AUTO_INCREMENT PRIMARY KEY,
+    PropietarioID INT,
+    PropiedadID INT,
+    PorcentajeParticipacion DECIMAL(5,2),
+    FOREIGN KEY (PropietarioID) REFERENCES Propietarios(PropietarioID),
+    FOREIGN KEY (PropiedadID) REFERENCES Propiedades(PropiedadID)
+);
+
+-- Impuestos
+CREATE TABLE Impuestos (
+    ImpuestoID INT AUTO_INCREMENT PRIMARY KEY,
+    Nombre VARCHAR(100),
+    Codigo VARCHAR(50),
+    Periodicidad ENUM('mensual','trimestral','anual')
+);
+
+-- Propiedades - Impuestos
+CREATE TABLE Propiedades_Impuestos (
+    Propiedad_ImpuestoID INT AUTO_INCREMENT PRIMARY KEY,
+    PropiedadID INT,
+    ImpuestoID INT,
+    NumeroCuenta VARCHAR(50),
+    ProveedorURL VARCHAR(200),
+    UltimoPeriodoDescargado DATE,
+    FOREIGN KEY (PropiedadID) REFERENCES Propiedades(PropiedadID),
+    FOREIGN KEY (ImpuestoID) REFERENCES Impuestos(ImpuestoID)
+);
+
+-- Contratos
+CREATE TABLE Contratos (
+    ContratoID INT AUTO_INCREMENT PRIMARY KEY,
+    PropiedadID INT,
+    PropietarioID INT,
+    InquilinoID INT,
+    FechaInicio DATE,
+    FechaFin DATE,
+    Estado ENUM('activo','vencido','rescindido') DEFAULT 'activo',
+    ValorInicial DECIMAL(10,2),
+    PeriodicidadIncremento ENUM('trimestral','semestral','anual'),
+    NotificarDiasAntes INT,
+    Notas TEXT,
+    FOREIGN KEY (PropiedadID) REFERENCES Propiedades(PropiedadID),
+    FOREIGN KEY (PropietarioID) REFERENCES Propietarios(PropietarioID),
+    FOREIGN KEY (InquilinoID) REFERENCES Inquilinos(InquilinoID)
+);
+
+-- Contrato - Garantes (N:N)
+CREATE TABLE Contrato_Garantes (
+    Contrato_GaranteID INT AUTO_INCREMENT PRIMARY KEY,
+    ContratoID INT,
+    GaranteID INT,
+    TipoRelacion VARCHAR(50),
+    FOREIGN KEY (ContratoID) REFERENCES Contratos(ContratoID),
+    FOREIGN KEY (GaranteID) REFERENCES Garantes(GaranteID)
+);
+
+-- Indices ICL
+CREATE TABLE IndicesICL (
+    ICL_ID INT AUTO_INCREMENT PRIMARY KEY,
+    FechaInicio DATE,
+    FechaFin DATE,
+    IndiceValor DECIMAL(10,4),
+    FuenteURL VARCHAR(200)
+);
+
+-- Incrementos
+CREATE TABLE Contrato_Incrementos (
+    Contrato_IncrementoID INT AUTO_INCREMENT PRIMARY KEY,
+    ContratoID INT,
+    FechaAplicacion DATE,
+    Porcentaje DECIMAL(5,2),
+    ValorResultante DECIMAL(10,2),
+    ICL_ID INT,
+    FOREIGN KEY (ContratoID) REFERENCES Contratos(ContratoID),
+    FOREIGN KEY (ICL_ID) REFERENCES IndicesICL(ICL_ID)
+);
+
+-- Comisiones
+CREATE TABLE Comisiones (
+    ComisionID INT AUTO_INCREMENT PRIMARY KEY,
+    ContratoID INT,
+    PropietarioID INT,
+    Tipo ENUM('porcentaje','fijo'),
+    Valor DECIMAL(10,2),
+    FOREIGN KEY (ContratoID) REFERENCES Contratos(ContratoID),
+    FOREIGN KEY (PropietarioID) REFERENCES Propietarios(PropietarioID)
+);
+
+-- Servicios / Cuentas de Servicio
+CREATE TABLE Servicios (
+    ServicioID INT AUTO_INCREMENT PRIMARY KEY,
+    PropiedadID INT,
+    Tipo ENUM('EPEC','AMOS','GAS','Municipal'),
+    NumeroCuenta VARCHAR(50),
+    ProveedorURL VARCHAR(200),
+    FOREIGN KEY (PropiedadID) REFERENCES Propiedades(PropiedadID)
+);
+
+-- Recibos y desglose
+CREATE TABLE Recibos (
+    ReciboID INT AUTO_INCREMENT PRIMARY KEY,
+    ContratoID INT,
+    PropiedadID INT,
+    FechaEmision DATE,
+    FechaPago DATE,
+    Total DECIMAL(10,2),
+    Tipo ENUM('alquiler','servicio','comision','gasto_extra'),
+    PDF_URL VARCHAR(200),
+    PagadoPor ENUM('inquilino','propietario'),
+    FOREIGN KEY (ContratoID) REFERENCES Contratos(ContratoID),
+    FOREIGN KEY (PropiedadID) REFERENCES Propiedades(PropiedadID)
+);
+
+CREATE TABLE Recibo_Items (
+    Recibo_ItemID INT AUTO_INCREMENT PRIMARY KEY,
+    ReciboID INT,
+    Descripcion VARCHAR(200),
+    Monto DECIMAL(10,2),
+    ImpuestoID INT,
+    TipoItem VARCHAR(50),
+    FOREIGN KEY (ReciboID) REFERENCES Recibos(ReciboID),
+    FOREIGN KEY (ImpuestoID) REFERENCES Impuestos(ImpuestoID)
+);
+
+-- Gastos Extra
+CREATE TABLE Gastos (
+    GastoID INT AUTO_INCREMENT PRIMARY KEY,
+    PropiedadID INT,
+    ContratoID INT,
+    Fecha DATE,
+    Monto DECIMAL(10,2),
+    Descripcion VARCHAR(200),
+    PagadoPor ENUM('inquilino','propietario'),
+    ComprobanteURL VARCHAR(200),
+    FOREIGN KEY (PropiedadID) REFERENCES Propiedades(PropiedadID),
+    FOREIGN KEY (ContratoID) REFERENCES Contratos(ContratoID)
+);
+
+-- Documentos / Fotos
+CREATE TABLE Documentos (
+    DocumentoID INT AUTO_INCREMENT PRIMARY KEY,
+    PropiedadID INT,
+    ContratoID INT,
+    Tipo ENUM('foto','contrato','comprobante'),
+    URL VARCHAR(200),
+    FOREIGN KEY (PropiedadID) REFERENCES Propiedades(PropiedadID),
+    FOREIGN KEY (ContratoID) REFERENCES Contratos(ContratoID)
+);
+
+-- Notificaciones
+CREATE TABLE Notificaciones (
+    NotificacionID INT AUTO_INCREMENT PRIMARY KEY,
+    Tipo VARCHAR(50),
+    EntidadTipo VARCHAR(50),
+    EntidadID INT,
+    EnviadoA INT,
+    FechaEnvio DATETIME,
+    Leido BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (EnviadoA) REFERENCES Usuarios(UsuarioID)
+);
+
+-- Logs de actividad
+CREATE TABLE Actividad_Log (
+    ActividadID INT AUTO_INCREMENT PRIMARY KEY,
+    UsuarioID INT,
+    Accion VARCHAR(200),
+    EntidadTipo VARCHAR(50),
+    EntidadID INT,
+    Fecha DATETIME,
+    FOREIGN KEY (UsuarioID) REFERENCES Usuarios(UsuarioID)
+);
+
+-- Índices para búsquedas rápidas
+CREATE INDEX idx_propiedades_estado ON Propiedades(Estado);
+CREATE INDEX idx_contratos_estado ON Contratos(Estado);
+CREATE INDEX idx_inquilinos_email ON Inquilinos(Email);
+CREATE INDEX idx_propietarios_email ON Propietarios(Email);
+CREATE INDEX idx_propiedades_ciudad ON Propiedades(CiudadID);
+CREATE INDEX idx_recibos_fecha_pago ON Recibos(FechaPago);
+
+CREATE VIEW vw_ContratosActivos AS
+SELECT 
+    c.ContratoID,
+    c.FechaInicio,
+    c.FechaFin,
+    c.Estado,
+    p.Nombre AS PropietarioNombre,
+    i.Nombre AS InquilinoNombre,
+    prop.Calle,
+    prop.Numero,
+    prop.Piso,
+    prop.Depto,
+    prop.Barrio,
+    prop.Estado AS PropiedadEstado
+FROM Contratos c
+JOIN Propietarios p ON c.PropietarioID = p.PropietarioID
+JOIN Inquilinos i ON c.InquilinoID = i.InquilinoID
+JOIN Propiedades prop ON c.PropiedadID = prop.PropiedadID
+WHERE c.Estado = 'activo';
+
+
+CREATE VIEW vw_RecibosPendientes AS
+SELECT 
+    r.ReciboID,
+    r.FechaEmision,
+    r.FechaPago,
+    r.Total,
+    r.Tipo,
+    r.PagadoPor,
+    c.ContratoID,
+    i.Nombre AS InquilinoNombre,
+    p.Nombre AS PropietarioNombre
+FROM Recibos r
+JOIN Contratos c ON r.ContratoID = c.ContratoID
+JOIN Inquilinos i ON c.InquilinoID = i.InquilinoID
+JOIN Propietarios p ON c.PropietarioID = p.PropietarioID
+WHERE r.FechaPago IS NULL;
+
+DELIMITER $$
+CREATE TRIGGER trg_Contrato_AfterInsert
+AFTER INSERT ON Contratos
+FOR EACH ROW
+BEGIN
+    UPDATE Propiedades
+    SET Estado = 'alquilada'
+    WHERE PropiedadID = NEW.PropiedadID;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER trg_Contrato_AfterUpdate
+AFTER UPDATE ON Contratos
+FOR EACH ROW
+BEGIN
+    IF OLD.Estado <> 'activo' AND NEW.Estado = 'activo' THEN
+        UPDATE Propiedades
+        SET Estado = 'alquilada'
+        WHERE PropiedadID = NEW.PropiedadID;
+    ELSEIF OLD.Estado = 'activo' AND NEW.Estado <> 'activo' THEN
+        UPDATE Propiedades
+        SET Estado = 'disponible'
+        WHERE PropiedadID = NEW.PropiedadID;
+    END IF;
+END$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER trg_Log_Recibos_Insert
+AFTER INSERT ON Recibos
+FOR EACH ROW
+BEGIN
+    INSERT INTO Actividad_Log (UsuarioID, Accion, EntidadTipo, EntidadID, Fecha)
+    VALUES (NULL, CONCAT('Recibo generado con ID ', NEW.ReciboID), 'Recibo', NEW.ReciboID, NOW());
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE sp_ContratosPropietario(IN p_PropietarioID INT)
+BEGIN
+    SELECT c.ContratoID, c.FechaInicio, c.FechaFin, c.Estado,
+           i.Nombre AS InquilinoNombre,
+           prop.Calle, prop.Numero, prop.Piso, prop.Depto
+    FROM Contratos c
+    JOIN Inquilinos i ON c.InquilinoID = i.InquilinoID
+    JOIN Propiedades prop ON c.PropiedadID = prop.PropiedadID
+    WHERE c.PropietarioID = p_PropietarioID AND c.Estado = 'activo';
+END$$
+DELIMITER ;
+DELIMITER $$
+CREATE PROCEDURE sp_GenerarReciboAlquiler(IN p_ContratoID INT)
+BEGIN
+    DECLARE v_PropiedadID INT;
+    DECLARE v_Total DECIMAL(10,2);
+
+    SELECT PropiedadID, ValorInicial INTO v_PropiedadID, v_Total
+    FROM Contratos
+    WHERE ContratoID = p_ContratoID;
+
+    INSERT INTO Recibos (ContratoID, PropiedadID, FechaEmision, Total, Tipo, PagadoPor)
+    VALUES (p_ContratoID, v_PropiedadID, CURDATE(), v_Total, 'alquiler', 'inquilino');
+END$$
+DELIMITER ;
+CREATE INDEX idx_propietarios_nombre ON Propietarios(Nombre);
+CREATE INDEX idx_inquilinos_nombre ON Inquilinos(Nombre);
+CREATE INDEX idx_contratos_fechainicio ON Contratos(FechaInicio);
+CREATE INDEX idx_recibos_tipo ON Recibos(Tipo);
