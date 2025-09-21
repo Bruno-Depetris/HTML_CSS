@@ -16,12 +16,13 @@ document.getElementById("btn-clientes").addEventListener("click", () => {
   loadView('inquilinoView')
 });
 
-document.getElementById("btn-propietarios").addEventListener("click", () => {
-  botonClickeado("btn-propietarios");
+document.getElementById("btn-propiedades").addEventListener("click", () => {
+  botonClickeado("btn-propiedades");
 });
 
-document.getElementById("btn-facturas").addEventListener("click", () => {
-  botonClickeado("btn-facturas");
+document.getElementById("btn-contratos").addEventListener("click", () => {
+  botonClickeado("btn-contratos");
+  loadView('contratosView')
 });
 
 document.getElementById("btn-notificaciones").addEventListener("click", () => {

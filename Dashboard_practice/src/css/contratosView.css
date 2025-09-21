@@ -1,0 +1,135 @@
+.contratos h1 {
+  color: #2343f7;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+
+.container-contratos {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.contratos-list {
+  background: #fff;
+  border-radius: 0.8rem;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+  padding: 1.2rem;
+  transition: 0.3s ease;
+}
+
+.contratos-list:hover {
+  transform: scale(1.01);
+  box-shadow: 0px 6px 16px rgba(0,0,0,0.15);
+}
+
+/* TOP */
+.container-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.container-top h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 1.2rem;
+  color: #2343f7;
+}
+
+.container-top .estado {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-weight: bold;
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.estado.activo {
+  color: #0f8a0f;
+  background: #d6f5d6;
+}
+
+.estado.vencido {
+  color: #c62828;
+  background: #f8d7da;
+}
+
+/* MID */
+.container-mid {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* 2 columnas */
+  gap: 0.6rem 1.2rem;
+  margin: 1rem 0;
+}
+
+.container-mid p {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+/* ALERTA */
+.container-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #fff3cd;
+  color: #856404;
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.container-bottom {
+  margin-top: auto;
+  display: flex;          
+  justify-content: flex-start; 
+  align-items: center;   
+  gap: 1rem;             
+  
+}
+
+
+.container-bottom button {
+  display: flex;               /* activa flexbox */
+  justify-content: center;     /* centra todo el contenido */
+  gap: 0.5rem;                 /* espacio entre ícono y texto */
+
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  background-color: #2343f70e;
+  width: 180px;
+  cursor: pointer;
+  margin: 0px 10px 10px 0px;
+  font-family: "Segoe UI", sans-serif;
+  font-size: 0.95rem;
+  color: rgb(45, 70, 151);
+
+  transition: 0.3s all;
+}
+
+.container-bottom button:hover {
+  background-color: #2343f730;
+  color: #2343f7;
+}
+
+.container-bottom button:hover .material-icons{
+  
+
+}
+
+
+
+

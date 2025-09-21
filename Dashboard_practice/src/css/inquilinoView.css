@@ -14,6 +14,7 @@
   margin-bottom: 2rem;
 }
 .container-search {
+  display: flex;
   text-align: initial;
   margin-top: auto;
   margin-bottom: 2%;
@@ -21,6 +22,7 @@
 
 .container-search input {
   text-align: center;
+  margin-right: 5px;
   padding: 0.6rem;
   width: 20;
   border: none;
@@ -34,6 +36,23 @@
   cursor: pointer;
   background-color: rgba(39, 35, 247, 0.507);
   color: rgb(45, 70, 151);
+}
+
+.container-search button{
+  padding: 0.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  color: rgb(45, 70, 151);
+  transition: 0.5s all;
+  background-color: #2343f741;
+  margin-left: auto;    
+}
+
+.container-search button:hover{
+ cursor: pointer;
+ transform: scale(1.1);   
+  background-color: rgba(147, 255, 105, 0.527);
+  color: black;
 }
 
 table {
