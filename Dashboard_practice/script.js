@@ -3,15 +3,17 @@
 
 let currentCSS = null;
 let currentScript = null;
-loadView('dashboardView');
-
+//loadView('dashboardView');
+loadView('inquilinoView')
 
 let ultimoBotonClickeado = null;
 let boton = null;
 
 document.getElementById("btn-dashboard").addEventListener("click", () => {
+
   botonClickeado("btn-dashboard");
   loadView('dashboardView')
+  
   // mostrarNotificacion("Contrato vencido en 3 días", "warning");
 });
 
@@ -57,6 +59,7 @@ function loadView(viewName) {
       // Limpiar JS anterior
       if (currentScript) currentScript.remove();
       currentScript = document.createElement('script');
+      currentScript.type = 'module';
       currentScript.src = `src/js/${viewName}.js`;
       document.body.appendChild(currentScript);
 
