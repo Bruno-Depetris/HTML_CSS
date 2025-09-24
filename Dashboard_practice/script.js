@@ -59,7 +59,6 @@ function loadView(viewName) {
       // Limpiar JS anterior
       if (currentScript) currentScript.remove();
       currentScript = document.createElement('script');
-      currentScript.type = 'module';
       currentScript.src = `src/js/${viewName}.js`;
       document.body.appendChild(currentScript);
 

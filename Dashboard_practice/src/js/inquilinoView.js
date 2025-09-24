@@ -1,81 +1,62 @@
-import { Inquilinos } from "./api.js";
-
-function abrirModal(nombre) {
-  document.getElementById("modal").style.display = "flex";
-  document.getElementById("nombre").value = nombre; 
-}
-
-function cerrarModal() {
-  document.getElementById("modal").style.display = "none";
-}
-
-
-window.onclick = function(event) {
-  const modal = document.getElementById("modal");
-  if (event.target === modal) {
-    cerrarModal();
-  }
-}
-
-
-function eliminiar(){
-    alert("desea eliminar?")
-}
-
-
-async function cargarDatos() {
-  const tbody = document.querySelector("table tbody");
-  tbody.innerHTML = ""; // limpia filas anteriores
-
+async function cargarInquilinos() {
   try {
-    // Traer todos los inquilinos desde la API
-    const inquilinos = await Inquilinos.getAll();
+    const inquilinos = await window.AppServices.InquilinoService.getAll();
+    const tbody = document.querySelector("#clientes-tabla tbody");
+    tbody.innerHTML = ""; // limpiar tabla antes de cargar
 
-    inquilinos.forEach(inq => {
+    inquilinos.forEach(inquilino => {
       const tr = document.createElement("tr");
 
       tr.innerHTML = `
-        <td>${inq.nombre}</td>
-        <td>${inq.email ?? "-"}</td>
-        <td>${inq.telefono ?? "-"}</td>
-        <td>${inq.codigoPropiedad ?? "-"}</td>
-        <td>${inq.direccion ?? "-"}</td>
-        <td>${inq.vencimiento ?? "-"}</td>
+        <td>${inquilino.nombre}</td>
+        <td>${inquilino.email}</td>
+        <td>${inquilino.telefono}</td>
+        <td>${inquilino.codigoPropiedad}</td>
+        <td>${inquilino.direccion}</td>
+        <td>${inquilino.vencimiento}</td>
         <td>
-          <button class="btn edit" onclick="abrirModal('${inq.nombre}')">✏️</button>
+          <button class="btn edit" data-nombre="${inquilino.nombre}">✏️</button>
         </td>
         <td>
-          <button class="btn delete" onclick="eliminar(${inq.id})">🗑️</button>
+          <button class="btn delete" data-nombre="${inquilino.nombre}">🗑️</button>
         </td>
       `;
 
       tbody.appendChild(tr);
     });
   } catch (err) {
-    console.error("Error cargando datos:", err.message);
-    tbody.innerHTML = `<tr><td colspan="8" style="color:red">Error al cargar datos</td></tr>`;
+    console.error("Error cargando inquilinos:", err);
   }
 }
 
-// Llamar cuando cargue la página
-document.addEventListener("DOMContentLoaded", cargarDatos);
+// Delegación de eventos para botones edit y delete
+document.addEventListener("click", e => {
+  if (e.target.matches(".btn.edit")) {
+    const nombre = e.target.dataset.nombre;
+    abrirModal(nombre);
+  }
 
-// Eliminar (ejemplo)
-async function eliminar(id) {
-  if (confirm("¿Seguro que querés eliminar este inquilino?")) {
-    try {
-      await Inquilinos.remove(id);
-      alert("Eliminado con éxito ✅");
-      cargarDatos(); // recargar la tabla
-    } catch (err) {
-      alert("Error eliminando: " + err.message);
-    }
+  if (e.target.matches(".btn.delete")) {
+    const nombre = e.target.dataset.nombre;
+    eliminar(nombre);
+  }
+});
+
+function abrirModal(nombre) {
+  document.getElementById("modal").style.display = "flex";
+  document.getElementById("nombre").value = nombre;
+}
+
+function cerrarModal() {
+  document.getElementById("modal").style.display = "none";
+}
+
+function eliminar(nombre) {
+  if (confirm(`¿Desea eliminar a ${nombre}?`)) {
+    console.log("Eliminar:", nombre);
+    // Aquí podrías llamar a window.AppServices.InquilinoService.delete(nombre) o id
   }
 }
 
-// Exponer funciones al HTML
-window.abrirModal = function(nombre) {
-  alert("Editar: " + nombre);
-};
-
-window.eliminar = eliminar;
+// Ejecutar la carga al mostrar la vista
+cargarInquilinos();
